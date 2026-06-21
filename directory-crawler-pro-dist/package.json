@@ -1,0 +1,20 @@
+{
+  "name": "directory-crawler-pro",
+  "version": "2.0.0-p1",
+  "description": "Enterprise business-directory crawler (Chrome MV3) — P0/P1: durable queue + service-worker survival.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "pnpm typecheck && node esbuild.config.mjs",
+    "watch": "node esbuild.config.mjs --watch",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.270",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
+  }
+}

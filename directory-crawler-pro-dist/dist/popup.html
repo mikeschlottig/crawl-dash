@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Crawler</title>
+    <style>
+      body {
+        width: 240px;
+        margin: 0;
+        padding: 16px;
+        font-family: system-ui, sans-serif;
+        background: #0f1623;
+        color: #e6edf6;
+      }
+      h1 {
+        font-size: 14px;
+        margin: 0 0 12px;
+      }
+      button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #0ea5e9, #a78bfa);
+        color: #04121f;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 13px;
+      }
+      button:hover {
+        filter: brightness(1.08);
+      }
+      p {
+        font-size: 11px;
+        color: #9fb0c8;
+        margin: 12px 0 0;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🏢 Directory Crawler Pro</h1>
+    <button id="open">Open Control Center</button>
+    <p>Opens the pop-out dashboard in its own window so it survives independently of the worker.</p>
+    <script type="module" src="./popup.js"></script>
+  </body>
+</html>

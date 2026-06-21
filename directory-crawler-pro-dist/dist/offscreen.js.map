@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../src/offscreen/offscreen.ts"],
+  "sourcesContent": ["// src/offscreen/offscreen.ts \u2014 pings the service worker to reset its idle timer.\n// 20s < the ~30s MV3 idle threshold, with margin. Each ping also wakes a dead SW,\n// which then runs resumeIfNeeded() \u2014 the secondary forced-kill recovery trigger.\nconst PING_MS = 20_000;\n\nsetInterval(() => {\n  chrome.runtime.sendMessage({ kind: \"__KEEPALIVE__\" }).catch(() => undefined);\n}, PING_MS);\n"],
+  "mappings": ";AAGA,IAAM,UAAU;AAEhB,YAAY,MAAM;AAChB,SAAO,QAAQ,YAAY,EAAE,MAAM,gBAAgB,CAAC,EAAE,MAAM,MAAM,MAAS;AAC7E,GAAG,OAAO;",
+  "names": []
+}

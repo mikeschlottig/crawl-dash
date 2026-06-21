@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../src/popup/popup.ts"],
+  "sourcesContent": ["// src/popup/popup.ts \u2014 single job: open (or focus) the detached control-center window.\nconst KEY = \"dashboardWindowId\";\n\ndocument.getElementById(\"open\")!.addEventListener(\"click\", async () => {\n  const got = await chrome.storage.session.get(KEY);\n  const existing = got[KEY] as number | undefined;\n  if (existing != null) {\n    try {\n      await chrome.windows.update(existing, { focused: true });\n      window.close();\n      return;\n    } catch {\n      /* stale id \u2014 recreate below */\n    }\n  }\n  const win = await chrome.windows.create({\n    url: \"dist/dashboard.html\",\n    type: \"popup\",\n    width: 1180,\n    height: 820,\n    focused: true,\n  });\n  if (win.id != null) await chrome.storage.session.set({ [KEY]: win.id });\n  window.close();\n});\n"],
+  "mappings": ";AACA,IAAM,MAAM;AAEZ,SAAS,eAAe,MAAM,EAAG,iBAAiB,SAAS,YAAY;AACrE,QAAM,MAAM,MAAM,OAAO,QAAQ,QAAQ,IAAI,GAAG;AAChD,QAAM,WAAW,IAAI,GAAG;AACxB,MAAI,YAAY,MAAM;AACpB,QAAI;AACF,YAAM,OAAO,QAAQ,OAAO,UAAU,EAAE,SAAS,KAAK,CAAC;AACvD,aAAO,MAAM;AACb;AAAA,IACF,QAAQ;AAAA,IAER;AAAA,EACF;AACA,QAAM,MAAM,MAAM,OAAO,QAAQ,OAAO;AAAA,IACtC,KAAK;AAAA,IACL,MAAM;AAAA,IACN,OAAO;AAAA,IACP,QAAQ;AAAA,IACR,SAAS;AAAA,EACX,CAAC;AACD,MAAI,IAAI,MAAM,KAAM,OAAM,OAAO,QAAQ,QAAQ,IAAI,EAAE,CAAC,GAAG,GAAG,IAAI,GAAG,CAAC;AACtE,SAAO,MAAM;AACf,CAAC;",
+  "names": []
+}

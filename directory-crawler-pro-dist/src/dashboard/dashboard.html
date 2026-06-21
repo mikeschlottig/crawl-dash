@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crawler Control Center</title>
+    <style>
+      :root {
+        --bg: #0a0e16;
+        --panel: #121b2b;
+        --panel2: #16202f;
+        --line: #1f2c41;
+        --line2: #2a3a55;
+        --ink: #e6edf6;
+        --dim: #9fb0c8;
+        --faint: #65788f;
+        --cyan: #38bdf8;
+        --green: #34d399;
+        --amber: #f59e0b;
+        --red: #fb7185;
+        --violet: #a78bfa;
+        --mono: "JetBrains Mono", ui-monospace, monospace;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        padding: 22px;
+        font-size: 14px;
+      }
+      h1 {
+        font-size: 20px;
+        margin: 0 0 16px;
+      }
+      h3 {
+        margin: 0 0 10px;
+        font-size: 14px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 7px;
+        color: #fff;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px 18px;
+        margin-bottom: 16px;
+      }
+      textarea {
+        width: 100%;
+        height: 110px;
+        padding: 10px;
+        border: 1px solid var(--line2);
+        border-radius: 8px;
+        background: #0a0f18;
+        color: var(--ink);
+        font-family: var(--mono);
+        font-size: 12px;
+        resize: vertical;
+      }
+      .config {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin: 12px 0;
+      }
+      label {
+        display: block;
+        font-size: 11px;
+        color: var(--dim);
+        margin-bottom: 4px;
+        font-weight: 600;
+      }
+      input {
+        width: 100%;
+        padding: 7px 9px;
+        border: 1px solid var(--line2);
+        border-radius: 7px;
+        background: #0a0f18;
+        color: var(--ink);
+        font-size: 13px;
+      }
+      select {
+        width: 100%;
+        padding: 7px 9px;
+        border: 1px solid var(--line2);
+        border-radius: 7px;
+        background: #0a0f18;
+        color: var(--ink);
+        font-size: 13px;
+      }
+      .btns {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-top: 6px;
+      }
+      .btn {
+        padding: 9px 15px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 12.5px;
+      }
+      .start {
+        background: var(--green);
+        color: #052e22;
+      }
+      .pause {
+        background: var(--amber);
+        color: #3a2603;
+      }
+      .resume {
+        background: var(--cyan);
+        color: #04212f;
+      }
+      .clear {
+        background: var(--red);
+        color: #3a0a14;
+      }
+      .badge {
+        margin-left: auto;
+        font-family: var(--mono);
+        font-size: 12px;
+        padding: 5px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--line2);
+        background: var(--panel2);
+        color: var(--cyan);
+      }
+      .progress {
+        height: 20px;
+        background: var(--line);
+        border-radius: 7px;
+        overflow: hidden;
+        margin-top: 12px;
+      }
+      .bar {
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, var(--cyan), var(--violet));
+        color: #04121f;
+        font-size: 11px;
+        font-weight: 700;
+        text-align: center;
+        line-height: 20px;
+        transition: width 0.3s;
+      }
+      #log {
+        background: #0a0f18;
+        border: 1px solid var(--line2);
+        border-radius: 8px;
+        padding: 12px;
+        font-family: var(--mono);
+        font-size: 11.5px;
+        height: 200px;
+        overflow-y: auto;
+        line-height: 1.6;
+      }
+      #log .info {
+        color: var(--cyan);
+      }
+      #log .warn {
+        color: var(--amber);
+      }
+      #log .error {
+        color: var(--red);
+      }
+      #log .success {
+        color: var(--green);
+        font-weight: 700;
+      }
+      .records {
+        max-height: 420px;
+        overflow-y: auto;
+      }
+      .rec {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 10px;
+        border-bottom: 1px solid var(--line);
+        font-size: 12.5px;
+        cursor: pointer;
+      }
+      .rec:hover {
+        background: var(--panel2);
+      }
+      .rec.active {
+        background: rgba(56, 189, 248, 0.1);
+        border-left: 3px solid var(--cyan);
+      }
+      .rec .host {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .pill {
+        font-family: var(--mono);
+        font-size: 10px;
+        padding: 2px 7px;
+        border-radius: 6px;
+        white-space: nowrap;
+      }
+      .pill.ok {
+        background: rgba(52, 211, 153, 0.15);
+        color: var(--green);
+      }
+      .pill.err {
+        background: rgba(251, 113, 133, 0.15);
+        color: var(--red);
+      }
+      .pill.kw {
+        background: rgba(167, 139, 250, 0.18);
+        color: var(--violet);
+      }
+      .pill.biz {
+        background: rgba(52, 211, 153, 0.14);
+        color: var(--green);
+      }
+      .filterbar {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+      }
+      .filterbar input[type="text"] {
+        flex: 1;
+        min-width: 140px;
+      }
+      .filterbar select {
+        width: auto;
+      }
+      .chk {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12px;
+        color: var(--dim);
+        font-weight: 600;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+      .chk input {
+        width: auto;
+      }
+      .exportbar {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--line);
+        flex-wrap: wrap;
+      }
+      .exportbar .spacer {
+        flex: 1;
+      }
+      .xbtn {
+        padding: 5px 10px;
+        border: 1px solid var(--line2);
+        border-radius: 6px;
+        background: var(--panel2);
+        color: var(--cyan);
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: var(--mono);
+      }
+      .xbtn:hover {
+        border-color: var(--cyan);
+      }
+      .rec .selbox {
+        width: auto;
+        flex: 0 0 auto;
+      }
+      .empty {
+        color: var(--faint);
+        text-align: center;
+        padding: 30px 0;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🏢 Crawler Control Center <span style="font-size: 12px; color: var(--faint)">· P1 durable engine</span></h1>
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h3>1 · Queue &amp; Parameters</h3>
+          <textarea id="urls" placeholder="One URL per line…"></textarea>
+          <div class="config">
+            <div>
+              <label>Timeout (seconds)</label><input id="timeout" type="number" value="30" min="5" />
+            </div>
+            <div><label>Concurrency</label><input id="concurrency" type="number" value="3" min="1" max="8" /></div>
+            <div><label>Allowed domains (comma sep, optional)</label><input id="domains" type="text" placeholder="example.com" /></div>
+            <div><label>Keyword alerts (comma sep)</label><input id="keywords" type="text" placeholder="HVAC, Plumbing, Lawyer" /></div>
+            <div>
+              <label>Engine</label>
+              <select id="engine">
+                <option value="render">Render (CDP + screenshot)</option>
+                <option value="fetch">Fetch (fast, no render)</option>
+              </select>
+            </div>
+            <div>
+              <label>Full-page screenshot</label>
+              <select id="fullpage">
+                <option value="yes">Yes</option>
+                <option value="no">Viewport only</option>
+              </select>
+            </div>
+          </div>
+          <div class="btns">
+            <button class="btn start" id="start">Start</button>
+            <button class="btn pause" id="pause">Pause</button>
+            <button class="btn resume" id="resume">Resume</button>
+            <button class="btn clear" id="clear">Clear</button>
+            <span class="badge" id="status">idle</span>
+          </div>
+          <div class="progress"><div class="bar" id="bar">0%</div></div>
+        </div>
+        <div class="card"><h3>2 · Activity Feed</h3><div id="log"></div></div>
+      </div>
+      <div>
+        <div class="card">
+          <h3>3 · Records <span style="font-size: 11px; color: var(--faint)" id="reccount"></span></h3>
+          <div class="filterbar">
+            <input id="search" type="text" placeholder="Search host / url / business name…" />
+            <select id="statusFilter">
+              <option value="all">All statuses</option>
+              <option value="ok">OK only</option>
+              <option value="errors">Errors only</option>
+            </select>
+            <label class="chk"><input type="checkbox" id="alertsOnly" /> Alerts</label>
+            <label class="chk"><input type="checkbox" id="businessOnly" /> Business</label>
+          </div>
+          <div class="exportbar">
+            <label class="chk"><input type="checkbox" id="selectAll" /> <span id="selsummary">Select all</span></label>
+            <span class="spacer"></span>
+            <span style="font-size:11px;color:var(--faint)">Export:</span>
+            <button class="xbtn" data-fmt="json">JSON</button>
+            <button class="xbtn" data-fmt="jsonl">JSONL</button>
+            <button class="xbtn" data-fmt="csv">CSV</button>
+            <button class="xbtn" data-fmt="md">MD</button>
+            <button class="xbtn" data-fmt="html">HTML</button>
+          </div>
+          <div class="records" id="records"><div class="empty">No records yet.</div></div>
+        </div>
+        <div class="card">
+          <h3>4 · Inspector</h3>
+          <div id="preview"><div class="empty">Select a record to inspect its capture &amp; metadata.</div></div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./dashboard.js"></script>
+  </body>
+</html>
